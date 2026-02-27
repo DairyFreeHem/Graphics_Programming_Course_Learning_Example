@@ -1,6 +1,27 @@
 #include <iostream>
 #include <GL/glut.h>
 
+typedef float vertex3[3];
+
+// Using your exact 8-point arrays
+vertex3 pt[8] = {
+    {0,0,0}, {0,1,0}, {1,0,0}, {1,1,0},
+    {0,0,1}, {0,1,1}, {1,0,1}, {1,1,1}
+};
+
+vertex3 hue[8] = {
+    {1,0,0}, {1,0,0}, {0,0,1}, {0,0,1},
+    {1,0,0}, {1,0,0}, {0,0,1}, {0,0,1}
+};
+
+// Indices to draw two separate 2D squares using the 3D data
+// Square 1: vertices 0, 1, 3, 2 (Z=0 plane)
+// Square 2: vertices 4, 5, 7, 6 (Z=1 plane - will look identical in 2D)
+unsigned int indices[] = {
+    0, 1, 3, 2, 
+    4, 5, 7, 6
+};
+GLenum errorCheck(std::string funcName);
 
 void init(void)
 {
@@ -8,39 +29,37 @@ void init(void)
 
     glMatrixMode(GL_PROJECTION);       // Set Projection parameters ( set projection matrix stack)
     gluOrtho2D(0.0,200.0,0.0,150.0);   // Set Orthographic window to 200 x 150 dimension window
-    glEnableClientState(GL_COLOR_ARRAY);
-    errorCheck("glEnableClientState");
 }
 
-// drawing function
-// gets called for every screen refresh
-void lineSegment (void)
+
+void colorArray(void)
 {
-    glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Enable client-side arrays
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
 
-    glColor4f(0.0,0.4,0.2,0.4);            // Set draw color to green
-    glBegin(GL_TRIANGLES);
-        glVertex2i(80,100);
-        glVertex2i(60,80);
-        glVertex2i(100,80);
-    glEnd();
+    // Point to the data
+    glVertexPointer(3, GL_FLOAT, 0, pt);
+    glColorPointer(3, GL_FLOAT, 0, hue);
 
-    glColor4f(0.0,0.0,0.0,0.7);
-    glBegin(GL_TRIANGLES);
-        glVertex2i(120,100);
-        glVertex2i(100,80);
-        glVertex2i(140,80);
-    glEnd();
+    // Draw 2 quads (8 indices total)
+    glDrawElements(GL_QUADS, 8, GL_UNSIGNED_INT, indices);
 
-    glFlush();                         // Process all OpenGL routines as quickly as possible.
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    glFlush();
+
 }
 
 
 int main(int argc, char** argv)
 {
+    glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
+
     glutInit(&argc, argv);             // Init GLUT ( and OpenGL by proxy ).
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA); // Set display mode
     glutInitWindowPosition(50,100);    // Set top-left display window position ( relative to monitor dimensions )
@@ -48,28 +67,8 @@ int main(int argc, char** argv)
     glutCreateWindow("An example OpenGL program"); // Create display window
     
     init();                            // Execute initialization procedure
-    glutDisplayFunc(lineSegment);      // Send graphics to display window ( graphics drawn by lineSegment)
+    glutDisplayFunc(colorArray);      // Send graphics to display window ( graphics drawn by lineSegment)
     glutMainLoop();                    // Run program main loop
 
     return 0;
-}
-
-
-GLenum errorCheck(std::string funcName)
-{
-    GLenum code;
-    const GLubyte *string;
-
-    code = glGetError();
-
-    if (code != GL_NO_ERROR)
-    {
-        string = gluErrorString(code);
-        std::cerr << "OpenGL error on function: " << funcName << " description: " << string << std::endl;
-    }
-    else
-    {
-        std::cout << funcName << ": OK" << std::endl;
-    }
-    
 }
