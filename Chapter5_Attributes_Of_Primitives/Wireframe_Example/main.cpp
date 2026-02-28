@@ -1,6 +1,9 @@
 #include <iostream>
 #include <GL/glut.h>
 
+static bool wireframeMode = false;
+
+const std::string label = "Q - Wireframe Mode";
 
 void init(void)
 {
@@ -14,37 +17,58 @@ void init(void)
 // gets called for every screen refresh
 void lineSegment (void)
 {
+
+    GLuint regHex;
     
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
-
-    glColor3f(1.0,0.0,0.0);            // Set draw color to red
-    glLineWidth(2.0);
-    glLineStipple(15, 0x000);
-    glBegin(GL_LINES);    
-        glVertex2i(50,100); 
-        glVertex2i(100,100);
-    glEnd();
-
-    glColor3f(0.0,1.0,0.0); 
-    glLineWidth(5.0);
-    glBegin(GL_LINES);    
-        glVertex2i(80,90); 
-        glVertex2i(130,90);
-    glEnd();
-
-    glColor3f(0.0,0.0,1.0); 
-    glLineWidth(10.0);
-
-    glBegin(GL_LINES);    
-        glVertex2i(100,80); 
-        glVertex2i(150,80);
-    glEnd();
+    if (wireframeMode)
+    {
+        glPolygonMode(GL_FRONT, GL_LINE);   
+    }
+    else
+    {
+        glPolygonMode(GL_FRONT, GL_FILL);
+    }
     
+
+
+    glColor3f(0.0,0.0,0.0);            // Set draw color to green
+    glBegin(GL_TRIANGLES);                 // Draw following shape as lines
+        glVertex2i(100,140);
+        glVertex2i(0,10);                // Draw following shape as lines
+        glVertex2i(200,10);
+    glEnd();
+
+    GLint xPos = 5;
+    for (GLint i = 0; i < label.size(); i++)
+    {
+        glRasterPos2i(xPos, 140);
+        // Add extra padding for capiral letters
+        if (label[i] >= 65 && label[i] <= 90)
+        {
+            xPos += 2;
+        }
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,label[i]);
+
+        
+        xPos += 4;
+    }
     
 
     glFlush();                         // Process all OpenGL routines as quickly as possible.
 }
 
+void keyboard(unsigned char key, int mouse_X, int mouse_Y)
+{
+
+    if (key == 'q' || key == 'Q')
+    {
+        wireframeMode = !wireframeMode;
+        lineSegment();
+    }
+    
+
+}
 
 int main(int argc, char** argv)
 {
@@ -56,6 +80,7 @@ int main(int argc, char** argv)
     
     init();                            // Execute initialization procedure
     glutDisplayFunc(lineSegment);      // Send graphics to display window ( graphics drawn by lineSegment)
+    glutKeyboardFunc(keyboard);        // Input function
     glutMainLoop();                    // Run program main loop
 
     return 0;
