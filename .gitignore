@@ -44,3 +44,4 @@
 **/.vscode
 **/main
 **/bitmap
+**/*.out
