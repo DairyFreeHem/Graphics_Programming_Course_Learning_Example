@@ -1,6 +1,8 @@
-// This example shows how to change the pattern a line is drawn using glLineStipple
+// DDA implamentation example
+// Try playing with gluOrtho2D values
 
 #include <iostream>
+#include <cmath>
 #include <GL/glut.h>
 
 void init(void)
@@ -11,39 +13,48 @@ void init(void)
     gluOrtho2D(0.0,200.0,0.0,150.0);   // Set Orthographic window to 200 x 150 dimension window
 }
 
+void setPixel(int x, int y)
+{
+    glBegin(GL_POINTS);
+        glVertex2i(x, y);
+    glEnd();
+}
+
+// DDA example
+void lineDDA(int x0, int y0, int x1, int y1)
+{
+    int steps, k;
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    float xIncrement, yIncrement, x = x0, y = y0;
+    if (fabs(dx) > fabs(dy))
+        steps = fabs(dx);
+    else
+        steps = fabs(dy);
+    xIncrement = float(dx) / float(steps);
+    yIncrement = float(dy) / float(steps);
+    setPixel(round(x), round(y));  
+    for (k = 0; k < steps; k++)
+    {
+        x += xIncrement;
+        y += yIncrement;
+        setPixel(round(x), round(y));
+    }
+    
+}
+
 // drawing function
 // gets called for every screen refresh
 void lineSegment (void)
 {
 
-
+    // Try resizing the window
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
-    glLineWidth(15.0);
-    glColor3f(1.0,0.0,0.0);            // Set draw color to red
-    
-    glLineStipple(1, 0xF0F0);
-    glBegin(GL_LINES);    
-        glVertex2i(50,100); 
-        glVertex2i(100,100);
-    glEnd();
-
-    glColor3f(0.0,1.0,0.0);
-    glLineStipple(1, 0xF044);
-    glBegin(GL_LINES);    
-        glVertex2i(80,90); 
-        glVertex2i(130,90);
-    glEnd();
-
-    glColor3f(0.0,0.0,1.0); 
-    glLineStipple(1, 0x0000);       // Empty line
-
-    glBegin(GL_LINES);    
-        glVertex2i(100,80); 
-        glVertex2i(150,80);
-    glEnd();
-    
-    
-
+    glColor3f(0.0,0.0,0.0);
+    lineDDA(0,0,20,40);
+    lineDDA(20,40,100,60);
+    lineDDA(100,60,120,30);
+    lineDDA(120,30,0,0);
     glFlush();                         // Process all OpenGL routines as quickly as possible.
 }
 

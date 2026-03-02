@@ -1,50 +1,71 @@
-// This example shows how to change the pattern a line is drawn using glLineStipple
-
 #include <iostream>
 #include <GL/glut.h>
+
+typedef struct 
+{
+    float x;
+    float y;
+}WcPt2D;
+
+typedef struct 
+{
+    float r,g,b;
+}Color;
+
+GLenum errorCheck(void);
+
 
 void init(void)
 {
     glClearColor (1.0, 1.0, 1.0, 0.0); // Set display-window color to white  #FFF0
-    glEnable(GL_LINE_STIPPLE);         // Enable Line style
+    glEnable(GL_LINE_STIPPLE);
     glMatrixMode(GL_PROJECTION);       // Set Projection parameters ( set projection matrix stack)
     gluOrtho2D(0.0,200.0,0.0,150.0);   // Set Orthographic window to 200 x 150 dimension window
 }
 
+
+void linePlot(WcPt2D *dataPts, int length, Color lineColor, GLfloat lineWidth = 2)
+{
+    glColor3f(lineColor.r,lineColor.g,lineColor.b);
+    glLineWidth(lineWidth);
+    glBegin(GL_LINE_STRIP);
+        for (int k = 0; k < length; k++)
+        {
+            glVertex2i(dataPts[k].x +2, dataPts[k].y +2);
+        }
+    glEnd();
+}
+
+
 // drawing function
 // gets called for every screen refresh
-void lineSegment (void)
+void draw (void)
 {
 
 
+    //TODO: Read line data from CSV
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
-    glLineWidth(15.0);
-    glColor3f(1.0,0.0,0.0);            // Set draw color to red
-    
-    glLineStipple(1, 0xF0F0);
-    glBegin(GL_LINES);    
-        glVertex2i(50,100); 
-        glVertex2i(100,100);
+
+    glColor3f(0.0,0.0,0.0);            // Set draw color to red
+    glLineWidth(5.0);
+    glBegin(GL_LINES);
+        glVertex2i(2,150);
+        glVertex2i(2,2);
+        glVertex2i(2,2);
+        glVertex2i(200,2);
     glEnd();
+    errorCheck();
 
-    glColor3f(0.0,1.0,0.0);
-    glLineStipple(1, 0xF044);
-    glBegin(GL_LINES);    
-        glVertex2i(80,90); 
-        glVertex2i(130,90);
-    glEnd();
+    glLineWidth(1.0);
 
-    glColor3f(0.0,0.0,1.0); 
-    glLineStipple(1, 0x0000);       // Empty line
 
-    glBegin(GL_LINES);    
-        glVertex2i(100,80); 
-        glVertex2i(150,80);
-    glEnd();
+    glLineStipple(1, 0x1C47);
+    WcPt2D dataPts[5] = {{1, 2}, {20,20}, {30,30}, {35,20}, {50,50}};
+    linePlot(dataPts,5, {1.0,0.0,0.0});
+
+
+    glFlush();
     
-    
-
-    glFlush();                         // Process all OpenGL routines as quickly as possible.
 }
 
 
@@ -57,11 +78,12 @@ int main(int argc, char** argv)
     glutCreateWindow("An example OpenGL program"); // Create display window
     
     init();                            // Execute initialization procedure
-    glutDisplayFunc(lineSegment);      // Send graphics to display window ( graphics drawn by lineSegment)
+    glutDisplayFunc(draw);      // Send graphics to display window ( graphics drawn by lineSegment)
     glutMainLoop();                    // Run program main loop
 
     return 0;
 }
+
 
 GLenum errorCheck(void)
 {
