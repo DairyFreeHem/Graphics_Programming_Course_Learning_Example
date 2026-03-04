@@ -3,7 +3,10 @@
 
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <GL/glut.h>
+
+typedef struct {int x,y;} vec2D;
 
 void init(void)
 {
@@ -27,10 +30,10 @@ void lineDDA(int x0, int y0, int x1, int y1)
     int dx = x1 - x0;
     int dy = y1 - y0;
     float xIncrement, yIncrement, x = x0, y = y0;
-    if (fabs(dx) > fabs(dy))
+    if (fabs(dx) > fabs(dy))                   // |m| > 1
         steps = fabs(dx);
     else
-        steps = fabs(dy);
+        steps = fabs(dy);                         // |m| < 1
     xIncrement = float(dx) / float(steps);
     yIncrement = float(dy) / float(steps);
     setPixel(round(x), round(y));  
@@ -43,18 +46,32 @@ void lineDDA(int x0, int y0, int x1, int y1)
     
 }
 
+void polylineDDA(std::vector<vec2D> polyline)
+{
+
+        vec2D p0 = polyline[0];
+        for (int i = 1; i < polyline.size(); i++)
+        {
+            vec2D p1 = polyline[i];
+            lineDDA(p0.x, p0.y, p1.x, p1.y);
+            p0 = p1;
+        }
+}
+
 // drawing function
 // gets called for every screen refresh
 void lineSegment (void)
 {
 
+    std::vector<vec2D> polyline = { {0,0},{20,40},{100,60},{120,30}, };
     // Try resizing the window
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
     glColor3f(0.0,0.0,0.0);
-    lineDDA(0,0,20,40);
-    lineDDA(20,40,100,60);
-    lineDDA(100,60,120,30);
-    lineDDA(120,30,0,0);
+    polylineDDA(polyline);
+    // lineDDA(0,0,20,40);
+    // lineDDA(20,40,100,60);
+    // lineDDA(100,60,120,30);
+    // lineDDA(120,30,0,0);
     glFlush();                         // Process all OpenGL routines as quickly as possible.
 }
 
@@ -76,14 +93,14 @@ int main(int argc, char** argv)
 
 GLenum errorCheck(void)
 {
-	GLenum code;
+	GLenum cod;
 	const GLubyte* errStr;
 
-	code = glGetError();
-	if (code != GL_NO_ERROR)
+	cod = glGetError();
+	if (cod != GL_NO_ERROR)
 	{
-		errStr = gluErrorString(code);
+		errStr = gluErrorString(cod);
 		std::cerr << "OpenGL error: " << errStr;
 	}
-	return code;
+	return cod;
 }
