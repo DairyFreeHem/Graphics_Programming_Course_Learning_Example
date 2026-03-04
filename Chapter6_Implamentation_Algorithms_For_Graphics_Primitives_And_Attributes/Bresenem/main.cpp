@@ -12,9 +12,9 @@ typedef struct {int x,y;} vec2D;
 
 void init(void)
 {
-    glClearColor (1.0, 1.0, 1.0, 0.0); // Set display-window color to white  #FFF0
-    glEnable(GL_LINE_STIPPLE);         // Enable Line style
-    glMatrixMode(GL_PROJECTION);       // Set Projection parameters ( set projection matrix stack)
+    glClearColor (1.0, 1.0, 1.0, 0.0);   // Set display-window color to white  #FFF0
+    glEnable(GL_LINE_STIPPLE);                             // Enable Line style
+    glMatrixMode(GL_PROJECTION);                          // Set Projection parameters ( set projection matrix stack)
     gluOrtho2D(0.0,200.0,0.0,150.0);   // Set Orthographic window to 200 x 150 dimension window
 }
 
