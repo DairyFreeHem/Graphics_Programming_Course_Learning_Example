@@ -1,14 +1,39 @@
+#include <GL/gl.h>
 #include<iostream>
-#include<cstdio>
 #include<math.h>
-#include<cstdlib>
 #include<GL/glut.h>
 
-#include "screenPt.h"
+class screenPt
+{
+    	private:
+		GLint x, y;
+	public:
+        screenPt(void)
+        {
+            this->x = this->y = 0;
+        }
+
+        void setCoords(GLint xCoord, GLint yCoord)
+        {
+            this->x = xCoord;
+            this->y = yCoord;
+        }
+
+        GLint getx(void) const
+        {
+            return this->x;
+        }
+
+        GLint gety(void) const
+        {
+            return this->y;
+        }
+
+};
 
 const double TWO_PI = 6.2831853;
 
-GLsizei winWidth = 400, winHeight = 400;
+GLsizei winWidth = 100, winHeight = 100;
 GLuint regHex;
 
 GLenum errorCheck(void);
@@ -19,7 +44,7 @@ void init(void)
 	GLdouble theta;
 	GLint k;
 
-	circCtr.setCoords (winWidth, winHeight);
+	circCtr.setCoords (winWidth , winHeight);
 	glClearColor(1.0, 1.0, 1.0, 0.0);    // Set display window (White #FFFFFF)
 
 	regHex = glGenLists(1);              // Set the identifier for the display lists
@@ -29,11 +54,13 @@ void init(void)
 	for (k = 0; k < 6; k++)
 	{
 		theta = TWO_PI * k / 6.0;
-		hexVertex.setCoords(circCtr.getx() + 150 * cos(theta), circCtr.gety() + 150 * sin(theta));
+		hexVertex.setCoords(circCtr.getx() + 50 * cos(theta), circCtr.gety() + 50 * sin(theta));
 		glVertex2i(hexVertex.getx(), hexVertex.gety());
 	}
 	glEnd();
 	glEndList();
+	glOrtho(0.0, 200.0, 0.0, 150.0, -1.0, 1.0);   // Set Orthographic window to 200 x 150 dimension window
+
 }
 
 void regHexagon(void)
@@ -41,19 +68,6 @@ void regHexagon(void)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glCallList(regHex);
-
-	glFlush();
-}
-
-void lineSegment(void)
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor3f(0.0, 0.4, 0.2);
-	glBegin(GL_LINES);
-	glVertex2i(180, 15);
-	glVertex2i(10, 145);
-	glEnd();
 
 	glFlush();
 }
