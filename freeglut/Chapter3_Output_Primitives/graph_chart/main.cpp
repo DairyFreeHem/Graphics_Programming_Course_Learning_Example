@@ -1,3 +1,4 @@
+#include <GL/gl.h>
 #include <iostream>
 #include <GL/glut.h>
 
@@ -12,51 +13,49 @@ GLubyte label [36] = {'J', 'a', 'n', 'F', 'e', 'b', 'M', 'a', 'r',
 GLint dataValue [12] = {420, 342, 324, 310, 262, 185,
 190, 196, 217, 240, 312, 438};
 
-GLubyte bitShape [20] = {
-0x1c, 0x00, 
-0x1c, 0x00,
-0x1c, 0x00, 
-0x1c, 0x00, 
-0x1c, 0x00,
-0xff, 0x80, 
-0x7f, 0x00, 
-0x3e, 0x00,
-0x1c, 0x00, 
-0x08, 0x00};
-
 
 void init(void)
 {
     glClearColor (1.0, 1.0, 1.0, 0.0); // Set display-window color to white  #FFF0
 
     glMatrixMode(GL_PROJECTION);       // Set Projection parameters ( set projection matrix stack)
-    gluOrtho2D(0.0,200.0,0.0,150.0);   // Set Orthographic window to 200 x 150 dimension window
+    gluOrtho2D(0.0,600.0,0.0,500.0);   // Set Orthographic window to 200 x 150 dimension window
 }
 
 // drawing function
 // gets called for every screen refresh
-void lineSegment (void)
+void lineGraph (void)
 {
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
 
-    glColor3f(0.0,0.4,0.2);            // Set draw color to green
-    glBegin(GL_LINES);                 // Draw following shape as lines
-        glVertex2i(180,15);
-        glVertex2i(10,145);
+    GLint month, k;
+    GLint x = 30;
+
+    glColor3f(0.0, 0.0,1.0);
+    
+    glBegin(GL_LINE_STRIP);
+        for (k = 0; k < 12; k++) {
+            glVertex2i(x + k*50 , dataValue[k]);
+        }
     glEnd();
 
+    glColor3f(1.0, 0.0, 0.0);
+    for (k = 0; k < 12; k++) {
+        glRasterPos2i(xRaster + k * 50, dataValue[k] - 4);
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, '*');
+    }
+
+    glColor3f(0.0, 0.0, 0.0);
+    xRaster = 20;
+    for (month = 0; month < 12; month++) {
+        glRasterPos2i(xRaster, yRaster);
+        for (k = 3 * month; k < 3 * month + 3; k++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, label[k]);
+            xRaster += 50;
+        }
+    }
+
     glFlush();                         // Process all OpenGL routines as quickly as possible.
-}
-
-void drawLineBitmap(void)
-{
-    glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
-
-    glColor3f(0.0,0.4,0.2);            // Set draw color to green
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1); // Set Pixel mode
-    glRasterPos2i(20,40);
-    glBitmap (9, 10, 0.0, 0.0, 20.0, 15.0, bitShape);
-    glFlush();                         
 }
 
 int main(int argc, char** argv)
@@ -68,7 +67,7 @@ int main(int argc, char** argv)
     glutCreateWindow("An example OpenGL program"); // Create display window
     
     init();                            // Execute initialization procedure
-    glutDisplayFunc(drawLineBitmap);      // Send graphics to display window ( graphics drawn by lineSegment)
+    glutDisplayFunc(lineGraph);      // Send graphics to display window ( graphics drawn by lineSegment)
     glutMainLoop();                    // Run program main loop
 
     return 0;

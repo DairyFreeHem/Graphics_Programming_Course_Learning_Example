@@ -1,3 +1,4 @@
+#include <GL/gl.h>
 #include <iostream>
 #include <GLFW/glfw3.h>
 
@@ -15,6 +16,9 @@ GLubyte bitShape [20] = {
 0x1c, 0x0F, 
 0x08, 0x00};
 
+
+const GLubyte Fixed8x13_Character_111[] = {  0,  0,  0,  0, 60, 66, 66, 66, 66, 60,  0,  0,  0,  0,  0};
+
 void drawBitmap(void)
 {
 
@@ -23,8 +27,10 @@ void drawBitmap(void)
     glColor3f(0.0,0.0,0.0);
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
+    glRasterPos2i(120,50);
+    glBitmap(8,13, 0, 0,8,5, Fixed8x13_Character_111);
     glRasterPos2i(30,40);
-    glBitmap(16,10,0.0,0.0,20.0,15.0,bitShape);
+    glBitmap(15,10,0.0,0.0,20.0,15.0,bitShape);
 
     glRasterPos2i(90,40);
     glBitmap(15,10,0.0,0.0,20.0,15.0,bitShape);

@@ -46,3 +46,7 @@
 **/bitmap
 **/*.out
 compile_flags.txt
+
+
+maman/**
+maman
