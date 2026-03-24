@@ -13,18 +13,20 @@ GLfloat ywcMin = 0.0, ywcMax = 640.0;
 
 void init(void)
 {
-    glClearColor (1.0, 1.0, 1.0, 0.0); // Set display-window color to white  #FFF0
+    glClearColor (1.0, 1.0, 1.0, 0.0);          // Set display-window color to white  #FFF0
     errorCheck();
-    glMatrixMode(GL_PROJECTION);       // Set Projection parameters ( set projection matrix stack)
+    glMatrixMode(GL_PROJECTION);                                 // Set Projection parameters ( set projection matrix stack)
     errorCheck();
     gluOrtho2D(xwcMin,xwcMax,ywcMin,ywcMax);   // Set Orthographic window to 200 x 150 dimension window
+    glMatrixMode(GL_MODELVIEW_MATRIX); // Set Current editing matrix to modelview
+    glLoadIdentity();
 }
 
 // drawing function
 // gets called for every screen refresh
 void lineSegment (void)
 {
-    
+
     glClear (GL_COLOR_BUFFER_BIT);     // Clear display window.
 
     glColor3f(0.0,0.4,0.2);            // Set draw color to green
@@ -34,6 +36,25 @@ void lineSegment (void)
         glVertex2f(460.0, 50);
     glEnd();
 
+    glTranslatef(40.0,20.0,0.0);
+
+    glColor3f(1.0,0.4,0.2);            // Set draw color to green
+    glBegin(GL_TRIANGLE_STRIP);                 // Draw following shape as lines
+        glVertex2f(240.0, 300.0);
+        glVertex2f(20.0, 50.0);
+        glVertex2f(460.0, 50);
+    glEnd();
+    
+    glTranslatef(-40.0,-20.0,0.0); // Reset translation
+    glTranslatef(-40.0,20.0,0.0);
+    glRotatef(90, 0.0, 0.0, 1.0);
+
+    glColor3f(0.0,0.0,1.2);            // Set draw color to green
+    glBegin(GL_TRIANGLE_STRIP);                 // Draw following shape as lines
+        glVertex2f(240.0, 300.0);
+        glVertex2f(20.0, 50.0);
+        glVertex2f(460.0, 50);
+    glEnd();
     glFlush();                         // Process all OpenGL routines as quickly as possible.
 }
 
