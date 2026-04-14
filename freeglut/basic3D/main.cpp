@@ -33,8 +33,6 @@ drawBox(void)
 {
   int i;
 
-  glColor3f(0.0,0.0,0.0);
-
   for (i = 0; i < 6; i++) {
     glBegin(GL_QUADS);
     glNormal3fv(&n[i][0]);
@@ -51,7 +49,29 @@ display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   drawBox();
+
+  glColor3f(0.0,1.0,0.0);
+  glBegin(GL_LINES);
+  glVertex3f(0.0,1.0,0.0);
+  glVertex3f(0.0, -1.0, 0.0);
+  glEnd();
+
+  glColor3f(1.0,0.0,0.0);
+  glBegin(GL_LINES);
+  glVertex3f(1.0,0.0,0.0);
+  glVertex3f(-1.0, 0.0, 0.0);
+  glEnd();
+
+  glColor3f(0.0,0.0,1.0);
+  glBegin(GL_LINES);
+  glVertex3f(0.0,0.0,1.0);
+  glVertex3f(0.0, 0.0,-1.0);
+  glEnd();
+  glColor3f(0.0,0.0,0.0);
+
+
   glutSwapBuffers();
+
 }
 
 void
@@ -92,35 +112,28 @@ init(void)
 void specialFunc(int key, int x , int y)
 {
 
-
-    static int angleZ = 70;
-    static int angleX = 70;
     if(key==GLUT_KEY_RIGHT)
     {
-        angleZ+= 0.5;
         glMatrixMode(GL_MODELVIEW);
-        glRotatef(angleZ, 0.0, 0.0, 0.5);
+        glRotatef(30, 0.0, 0.0, 0.5);
         display();
     }
     if(key==GLUT_KEY_LEFT)
     {
-        angleZ+= 0.5;
         glMatrixMode(GL_MODELVIEW);
-        glRotatef(angleZ, 0.0, 0.0, -0.5);
+        glRotatef(30, 0.0, 0.0, -0.5);
         display();
     }
     if(key==GLUT_KEY_UP)
     {
-        angleX+= 0.5;
         glMatrixMode(GL_MODELVIEW);
-        glRotatef(angleX, 0.5, 0.0, 0.0);
+        glRotatef(30, 0.5, 0.0, 0.0);
         display();
     }
     if(key==GLUT_KEY_DOWN)
     {
-        angleX+= 0.5;
         glMatrixMode(GL_MODELVIEW);
-        glRotatef(angleX, -0.5, 0.0, 0.0);
+        glRotatef(30, -0.5, 0.0, 0.0);
         display();
     }
 }

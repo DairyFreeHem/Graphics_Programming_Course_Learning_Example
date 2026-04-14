@@ -15,5 +15,7 @@ class wcPt2D{
             }
             this->x = other.x;
             this->y = other.y;
+            
+            return *this;
         }
 };
